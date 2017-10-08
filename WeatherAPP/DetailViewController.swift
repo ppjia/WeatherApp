@@ -10,36 +10,41 @@ import UIKit
 
 class DetailViewController: UIViewController {
 
-    @IBOutlet weak var detailDescriptionLabel: UILabel!
-
-
-    func configureView() {
-        // Update the user interface for the detail item.
-        if let detail = detailItem {
-            if let label = detailDescriptionLabel {
-                label.text = detail.description
-            }
+    @IBOutlet fileprivate weak var summaryLabel: UILabel!
+    @IBOutlet fileprivate weak var pressureLabel: UILabel!
+    @IBOutlet fileprivate weak var humidityLabel: UILabel!
+    @IBOutlet fileprivate weak var maxTemperatureLabel: UILabel!
+    @IBOutlet fileprivate weak var minTemperatureLabel: UILabel!
+    
+    var weatherDetails: WeatherDetails? {
+        didSet {
+            configureView()
         }
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+        title = weatherDetails?.city
         configureView()
+        animate()
     }
+}
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+private extension DetailViewController {
+    func configureView() {
+        // Update the user interface for the detail item.
+        guard let details = weatherDetails else { return }
+        summaryLabel?.text = details.weather.summary
+        pressureLabel?.text = "\(details.main.pressure)"
+        humidityLabel?.text = "\(details.main.humidity)"
+        maxTemperatureLabel?.text = "\(details.main.temperatureMax)"
+        minTemperatureLabel?.text = "\(details.main.temperatureMin)"
     }
-
-    var detailItem: NSDate? {
-        didSet {
-            // Update the view.
-            configureView()
+    
+    func animate() {
+        UIView.animate(withDuration: 2) {
+            self.summaryLabel.alpha = 1
         }
     }
-
-
 }
 
